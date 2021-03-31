@@ -35,7 +35,7 @@ class FileController extends Controller
      *       "message": "Unauthenticated."
      *     }
      *
-     * @apiSampleRequest https://daily.devapi.comento.kr/api/getSignedUrl
+     * @apiSampleRequest http://daily.devapi.comento.kr/api/getSignedUrl
      */
     public function getSignedUrl(Request $request) {
 
@@ -53,11 +53,21 @@ class FileController extends Controller
         $cmd = $client->getCommand('PutObject', [
             'Bucket' => $bucket,
             'Key' => $key,
-            'ACL' => $acl // Explained later
+            'ACL' => 'public-read' // Explained later
         ]);// Get the presigned request
-        $requestUrl = $client->createPresignedRequest($cmd, '+5 minutes');// Get the actual URL to make the request to
+        $requestUrl = $client->createPresignedRequest($cmd, '+30 minutes');// Get the actual URL to make the request to
         $presignedUrl = (string)$requestUrl->getUri();
 
         return response()->json(['url'=>$presignedUrl]);
+    }
+
+
+    public function upload(Request $request)
+    {
+        $url = "https://comento-etc.s3.ap-northeast-2.amazonaws.com/index.jpg?x-amz-acl=public-read&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA22WUXUNF2OBPXLJO%2F20210208%2Fap-northeast-2%2Fs3%2Faws4_request&X-Amz-Date=20210208T101026Z&X-Amz-SignedHeaders=host%3Bx-amz-acl&X-Amz-Expires=1800&X-Amz-Signature=47ce541a6fae7a7c9d27444c3ba3a0e0ab948f1b45a02b42351618ad41f8dd95";
+        \Http::attach(
+            'attachment', file_get_contents(storage_path('index.jpg')), 'index.jpg'
+        )->put($url);
+
     }
 }

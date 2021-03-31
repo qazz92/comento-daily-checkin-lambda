@@ -18,6 +18,9 @@ Route::get('/welcome',function () {
     return response()->json(['msg'=>'hello, world!','user'=>\App\Models\User::inRandomOrder()->first()]);
 });
 
+Route::get('/getSignedUrl',[\App\Http\Controllers\FileController::class,'getSignedUrl']);
+
+
 Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/user/me',[\App\Http\Controllers\UserController::class,'me']);
 
@@ -43,7 +46,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::delete('/notice',[\App\Http\Controllers\NoticeController::class,'delete']);
 
 
-    Route::get('/getSignedUrl',[\App\Http\Controllers\FileController::class,'getSignedUrl']);
 
 });
 
