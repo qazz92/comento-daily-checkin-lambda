@@ -54,7 +54,7 @@ class CommentController extends Controller
         $this->commentModel->user_id = $request->user()->id;
         $this->commentModel->save();
 
-        return response()->json([],204);
+        return response()->json([$this->commentModel],200);
     }
 
     /**
